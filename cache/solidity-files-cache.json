@@ -1,0 +1,244 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/contracts/CoreEVMArbitrage.sol": {
+      "lastModificationDate": 1754417823572,
+      "contentHash": "56e8320cfb5b415ddbd105660749f5ca",
+      "sourceName": "contracts/CoreEVMArbitrage.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/ICoreWriter.sol",
+        "./interfaces/IL1Read.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "CoreEVMArbitrage"
+      ]
+    },
+    "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/contracts/interfaces/IL1Read.sol": {
+      "lastModificationDate": 1754417763529,
+      "contentHash": "b24698c9b1a4de827fa9eb935a8adfdd",
+      "sourceName": "contracts/interfaces/IL1Read.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "IL1BlockNumber",
+        "IPerpsOracles",
+        "IPerpsPositions",
+        "ISpotBalances",
+        "ISpotOracles",
+        "IStakingDelegations",
+        "IVaultEquity"
+      ]
+    },
+    "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/contracts/interfaces/ICoreWriter.sol": {
+      "lastModificationDate": 1754417754871,
+      "contentHash": "bd85294b524fa6b658da49d38c9237a0",
+      "sourceName": "contracts/interfaces/ICoreWriter.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "ICoreWriter"
+      ]
+    },
+    "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/contracts/TransactionSimulator.sol": {
+      "lastModificationDate": 1754417790823,
+      "contentHash": "f9b583aa6d754577cdd39070de20821e",
+      "sourceName": "contracts/TransactionSimulator.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/ICoreWriter.sol",
+        "./interfaces/IL1Read.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "TransactionSimulator"
+      ]
+    },
+    "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/contracts/precompiles/OraclePrecompile.sol": {
+      "lastModificationDate": 1754417889689,
+      "contentHash": "de8225643273f40578299bf0173ce05c",
+      "sourceName": "contracts/precompiles/OraclePrecompile.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../interfaces/IL1Read.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "OraclePrecompile"
+      ]
+    },
+    "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/contracts/ShieldedTWAPExecutor.sol": {
+      "lastModificationDate": 1754421299213,
+      "contentHash": "be30443cea597d749d900ec094efd2e8",
+      "sourceName": "contracts/ShieldedTWAPExecutor.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/ICoreWriter.sol",
+        "./interfaces/IL1Read.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "ShieldedTWAPExecutor"
+      ]
+    }
+  }
+}

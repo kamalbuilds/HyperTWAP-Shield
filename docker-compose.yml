@@ -1,0 +1,114 @@
+version: '3.8'
+
+services:
+  simulator:
+    build:
+      context: ./simulator
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - RUST_LOG=info
+      - HYPERLIQUID_RPC_URL=${HYPERLIQUID_RPC_URL}
+    networks:
+      - hypercore-network
+    restart: unless-stopped
+
+  arbitrage-bot:
+    build:
+      context: ./arbitrage
+      dockerfile: Dockerfile
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL}
+      - HYPERLIQUID_RPC_URL=${HYPERLIQUID_RPC_URL}
+      - ARBITRAGE_BOT_PRIVATE_KEY=${ARBITRAGE_BOT_PRIVATE_KEY}
+      - ARBITRAGE_MIN_PROFIT_USD=${ARBITRAGE_MIN_PROFIT_USD}
+    networks:
+      - hypercore-network
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - prometheus
+
+  rpc-server:
+    build:
+      context: ./rpc-enhancements
+      dockerfile: Dockerfile
+    ports:
+      - "8545:8545"
+      - "8546:8546"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - HYPERLIQUID_RPC_URL=${HYPERLIQUID_RPC_URL}
+      - REDIS_HOST=redis
+      - RPC_CACHE_TTL_MS=${RPC_CACHE_TTL_MS}
+    networks:
+      - hypercore-network
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - simulator
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - hypercore-network
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - hypercore-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=redis-datasource
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./infrastructure/monitoring/grafana:/etc/grafana/provisioning
+    networks:
+      - hypercore-network
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=hypercore
+      - POSTGRES_PASSWORD=hypercore123
+      - POSTGRES_DB=hypercore_suite
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - hypercore-network
+    restart: unless-stopped
+
+networks:
+  hypercore-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  prometheus-data:
+  grafana-data:
+  postgres-data:
