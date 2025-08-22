@@ -12,8 +12,8 @@
             "enabled": true,
             "runs": 200
           },
-          "viaIR": true,
           "evmVersion": "paris",
+          "viaIR": true,
           "outputSelection": {
             "*": {
               "*": [
@@ -52,8 +52,8 @@
             "enabled": true,
             "runs": 200
           },
-          "viaIR": true,
           "evmVersion": "paris",
+          "viaIR": true,
           "outputSelection": {
             "*": {
               "*": [
@@ -95,8 +95,8 @@
             "enabled": true,
             "runs": 200
           },
-          "viaIR": true,
           "evmVersion": "paris",
+          "viaIR": true,
           "outputSelection": {
             "*": {
               "*": [
@@ -132,8 +132,8 @@
             "enabled": true,
             "runs": 200
           },
-          "viaIR": true,
           "evmVersion": "paris",
+          "viaIR": true,
           "outputSelection": {
             "*": {
               "*": [
@@ -172,8 +172,8 @@
             "enabled": true,
             "runs": 200
           },
-          "viaIR": true,
           "evmVersion": "paris",
+          "viaIR": true,
           "outputSelection": {
             "*": {
               "*": [
@@ -201,8 +201,8 @@
       ]
     },
     "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/contracts/ShieldedTWAPExecutor.sol": {
-      "lastModificationDate": 1754421299213,
-      "contentHash": "be30443cea597d749d900ec094efd2e8",
+      "lastModificationDate": 1756099609061,
+      "contentHash": "94bca3d8afd84b6a0dd394187b3419c3",
       "sourceName": "contracts/ShieldedTWAPExecutor.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -211,8 +211,51 @@
             "enabled": true,
             "runs": 200
           },
-          "viaIR": true,
           "evmVersion": "paris",
+          "viaIR": true,
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./interfaces/ICoreWriter.sol",
+        "./interfaces/IL1Read.sol",
+        "../twap-executor/execution/AdaptiveExecutor.sol",
+        "../twap-executor/shielding/PrivacyManager.sol",
+        "../twap-executor/analytics/PerformanceTracker.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "ShieldedTWAPExecutor"
+      ]
+    },
+    "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/contracts/ShieldedTWAPExecutorV2.sol": {
+      "lastModificationDate": 1756099592625,
+      "contentHash": "67ce1d1c53f5108fbe03571a1bbb9dda",
+      "sourceName": "contracts/ShieldedTWAPExecutorV2.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "viaIR": true,
           "outputSelection": {
             "*": {
               "*": [
@@ -237,7 +280,234 @@
         "^0.8.24"
       ],
       "artifacts": [
-        "ShieldedTWAPExecutor"
+        "ShieldedTWAPExecutorV2"
+      ]
+    },
+    "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/twap-executor/shielding/PrivacyManager.sol": {
+      "lastModificationDate": 1756097824976,
+      "contentHash": "e945038253f5263e7e6aa9d98d10631b",
+      "sourceName": "twap-executor/shielding/PrivacyManager.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "viaIR": true,
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../interfaces/IZKVerifier.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "PrivacyManager"
+      ]
+    },
+    "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/twap-executor/execution/AdaptiveExecutor.sol": {
+      "lastModificationDate": 1756097714748,
+      "contentHash": "cd0de4f77f2af38f132333aff94c1358",
+      "sourceName": "twap-executor/execution/AdaptiveExecutor.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "viaIR": true,
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../interfaces/IVolatilityOracle.sol",
+        "../interfaces/ILiquidityProvider.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "AdaptiveExecutor"
+      ]
+    },
+    "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/twap-executor/analytics/PerformanceTracker.sol": {
+      "lastModificationDate": 1756097841890,
+      "contentHash": "86ad7c67425e8060aa52f2dbf741a9e0",
+      "sourceName": "twap-executor/analytics/PerformanceTracker.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "viaIR": true,
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "PerformanceTracker"
+      ]
+    },
+    "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/twap-executor/interfaces/IZKVerifier.sol": {
+      "lastModificationDate": 1756097925133,
+      "contentHash": "9714033a4685f2b17381d3f049488067",
+      "sourceName": "twap-executor/interfaces/IZKVerifier.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "viaIR": true,
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "IZKVerifier"
+      ]
+    },
+    "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/twap-executor/interfaces/IVolatilityOracle.sol": {
+      "lastModificationDate": 1756097869139,
+      "contentHash": "d5e73e4aecfc5076783a12ab9ddb626f",
+      "sourceName": "twap-executor/interfaces/IVolatilityOracle.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "viaIR": true,
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "IVolatilityOracle"
+      ]
+    },
+    "/Users/kamal/Desktop/hyperliq/claude-code-hooks-mastery/precompiles-track/twap-executor/interfaces/ILiquidityProvider.sol": {
+      "lastModificationDate": 1756097898813,
+      "contentHash": "0df3cc22612553055116a561d215eaae",
+      "sourceName": "twap-executor/interfaces/ILiquidityProvider.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "viaIR": true,
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "ILiquidityProvider"
       ]
     }
   }

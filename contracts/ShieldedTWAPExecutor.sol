@@ -130,7 +130,7 @@ contract ShieldedTWAPExecutor {
         bytes32 secret,
         bool useAdaptiveExecution,
         bytes32 commitmentHash
-    ) external returns (bytes32) {
+    ) public returns (bytes32) {
         require(totalSize > 0 && baseSliceSize > 0, "Invalid sizes");
         require(totalSize >= baseSliceSize, "Slice too large");
         require(baseInterval >= MIN_INTERVAL, "Interval too short");
@@ -139,7 +139,7 @@ contract ShieldedTWAPExecutor {
         // Generate random seed for MEV protection
         uint256 randomSeed = uint256(keccak256(abi.encodePacked(
             block.timestamp,
-            block.difficulty,
+            block.prevrandao,
             msg.sender,
             assetNonces[asset]++,
             secret
@@ -407,5 +407,222 @@ contract ShieldedTWAPExecutor {
     
     function getUserOrders(address user) external view returns (bytes32[] memory) {
         return userOrders[user];
+    }
+    
+    /**
+     * @dev Create a batch order for multiple TWAP executions
+     */
+    function createBatchOrder(
+        bytes32[] calldata orderIds
+    ) external returns (bytes32 batchId) {
+        require(orderIds.length > 0 && orderIds.length <= MAX_BATCH_SIZE, "Invalid batch size");
+        
+        // Verify all orders belong to sender and are ready for execution
+        for (uint256 i = 0; i < orderIds.length; i++) {
+            TWAPOrder memory order = shieldedOrders[orderIds[i]];
+            require(order.owner == msg.sender, "Not order owner");
+            require(order.active, "Order not active");
+            require(block.timestamp >= order.nextExecutionTime, "Order not ready");
+        }
+        
+        // Generate merkle root for batch verification
+        bytes32 merkleRoot = privacyManager.generateMerkleRoot(orderIds);
+        
+        batchId = keccak256(abi.encodePacked(
+            msg.sender,
+            merkleRoot,
+            block.timestamp,
+            nonce++
+        ));
+        
+        batchOrders[batchId] = BatchOrder({
+            orderIds: orderIds,
+            merkleRoot: merkleRoot,
+            executionTime: block.timestamp,
+            executed: false
+        });
+        
+        emit BatchOrderCreated(batchId, merkleRoot, orderIds.length);
+        
+        return batchId;
+    }
+    
+    /**
+     * @dev Execute a batch of TWAP orders atomically
+     */
+    function executeBatchOrder(
+        bytes32 batchId,
+        bytes32[] calldata secrets
+    ) external returns (bool success) {
+        BatchOrder storage batch = batchOrders[batchId];
+        require(!batch.executed, "Batch already executed");
+        require(secrets.length == batch.orderIds.length, "Secret count mismatch");
+        
+        uint256 totalGasUsed = 0;
+        uint256 executedCount = 0;
+        uint256 gasStart = gasleft();
+        
+        // Execute all orders in batch
+        for (uint256 i = 0; i < batch.orderIds.length; i++) {
+            bytes32 orderId = batch.orderIds[i];
+            
+            // Use try-catch to continue batch execution even if individual orders fail
+            try this.executeTWAPSlice(orderId, secrets[i]) returns (ExecutionResult memory result) {
+                if (result.success) {
+                    executedCount++;
+                }
+            } catch {
+                // Log failed execution but continue with batch
+            }
+        }
+        
+        batch.executed = true;
+        totalGasUsed = gasStart - gasleft();
+        
+        emit BatchOrderExecuted(batchId, executedCount, totalGasUsed);
+        
+        return executedCount > 0;
+    }
+    
+    /**
+     * @dev Create order using commit-reveal scheme for enhanced privacy
+     */
+    function createCommitRevealOrder(
+        bytes32 commitment,
+        uint256 revealTime
+    ) external returns (bytes32 commitmentHash) {
+        return privacyManager.commitOrder(commitment, revealTime);
+    }
+    
+    /**
+     * @dev Reveal and execute committed order
+     */
+    function revealAndCreateOrder(
+        bytes32 commitmentHash,
+        uint32 asset,
+        uint64 totalSize,
+        uint64 baseSliceSize,
+        uint256 baseInterval,
+        uint64 minPrice,
+        uint64 maxPrice,
+        bool isBuy,
+        uint256 revealNonce,
+        bytes32 secret,
+        bool useAdaptiveExecution
+    ) external returns (bytes32 orderId) {
+        // First reveal the commitment
+        bool revealed = privacyManager.revealOrder(
+            commitmentHash,
+            asset,
+            totalSize,
+            baseSliceSize,
+            baseInterval,
+            minPrice,
+            maxPrice,
+            isBuy,
+            revealNonce,
+            secret
+        );
+        
+        require(revealed, "Failed to reveal commitment");
+        
+        // Then create the actual TWAP order
+        return createShieldedTWAP(
+            asset,
+            totalSize,
+            baseSliceSize,
+            baseInterval,
+            minPrice,
+            maxPrice,
+            isBuy,
+            secret,
+            useAdaptiveExecution,
+            commitmentHash
+        );
+    }
+    
+    /**
+     * @dev Get comprehensive order analytics
+     */
+    function getOrderAnalytics(bytes32 orderId) external view returns (
+        uint256 currentSlippage,
+        uint256 averageGasUsed,
+        uint256 executionEfficiency,
+        uint256 priceDeviation
+    ) {
+        // Get performance data from tracker
+        (
+            PerformanceTracker.OrderPerformance memory performance,
+            PerformanceTracker.ExecutionMetrics[] memory executions,
+            uint256 totalSlices,
+            uint256 avgSlippage,
+            uint256 avgGasPerSlice
+        ) = performanceTracker.getOrderPerformanceReport(orderId);
+        
+        currentSlippage = avgSlippage;
+        averageGasUsed = avgGasPerSlice;
+        executionEfficiency = performance.performanceScore;
+        
+        if (performance.benchmarkPrice > 0 && performance.averageExecutionPrice > 0) {
+            priceDeviation = performance.averageExecutionPrice > performance.benchmarkPrice ?
+                performance.averageExecutionPrice - performance.benchmarkPrice :
+                performance.benchmarkPrice - performance.averageExecutionPrice;
+            priceDeviation = (priceDeviation * 10000) / performance.benchmarkPrice; // In basis points
+        }
+    }
+    
+    /**
+     * @dev Emergency pause functionality for MEV attacks
+     */
+    function emergencyPauseOrder(bytes32 orderId) external onlyOrderOwner(orderId) {
+        TWAPOrder storage order = shieldedOrders[orderId];
+        
+        // Add random delay to prevent MEV exploitation
+        uint256 emergencyDelay = privacyManager.generateRandomDelay(orderId, MEV_PROTECTION_WINDOW * 2);
+        order.nextExecutionTime = block.timestamp + emergencyDelay;
+        
+        emit MEVProtectionTriggered(orderId, emergencyDelay, order.nextExecutionTime);
+    }
+    
+    /**
+     * @dev Get optimal execution timing recommendation
+     */
+    function getOptimalExecutionTiming(bytes32 orderId) external view returns (
+        uint256 recommendedDelay,
+        uint256 marketVolatility,
+        uint256 liquidityDepth,
+        bool shouldWait
+    ) {
+        TWAPOrder memory order = shieldedOrders[orderId];
+        
+        recommendedDelay = adaptiveExecutor.getOptimalExecutionTiming(order.asset);
+        
+        // Get market conditions
+        AdaptiveExecutor.MarketConditions memory conditions = adaptiveExecutor.getMarketConditions(order.asset);
+        marketVolatility = conditions.volatility;
+        liquidityDepth = conditions.liquidity;
+        
+        // Recommend waiting if market conditions are unfavorable
+        shouldWait = (conditions.volatility > 1e18) || (conditions.liquidity < 1000e18);
+    }
+    
+    /**
+     * @dev Calculate slippage for execution analysis
+     */
+    function _calculateSlippage(uint64 executionPrice, uint256 marketPrice) internal pure returns (uint256) {
+        if (marketPrice == 0) return 0;
+        
+        uint256 difference = uint256(executionPrice) > marketPrice ? 
+            uint256(executionPrice) - marketPrice : marketPrice - uint256(executionPrice);
+        
+        return (difference * 10000) / marketPrice; // Return in basis points
+    }
+    
+    /**
+     * @dev Generate MEV protection delay
+     */
+    function _generateMEVDelay(bytes32 orderId, uint256 randomSeed) internal view returns (uint256) {
+        // Generate random delay between 0 and MEV_PROTECTION_WINDOW
+        return (randomSeed % MEV_PROTECTION_WINDOW) + MIN_INTERVAL;
     }
 }

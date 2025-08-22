@@ -1,6 +1,6 @@
 require("@nomicfoundation/hardhat-toolbox");
-require("dotenv").config();
 
+/** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: {
     version: "0.8.24",
@@ -9,28 +9,44 @@ module.exports = {
         enabled: true,
         runs: 200
       },
+      evmVersion: "paris",
       viaIR: true
     }
   },
   networks: {
-    hyperliquid: {
-      url: "https://rpc.hyperliquid.xyz/evm",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      chainId: 998
-    },
-    hyperliquidTestnet: {
+    "hyperliquid-testnet": {
       url: "https://rpc.hyperliquid-testnet.xyz/evm",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      chainId: 998
+      chainId: 998,
+      accounts: ["0x923f625563505ea324659d273fe88c1c4b4f25ef377fcbad1bcc64b0b5a298f8"],
+      gasPrice: "auto",
+      gas: "auto"
     },
-    localhost: {
-      url: "http://127.0.0.1:8545"
+    hardhat: {
+      chainId: 31337
     }
+  },
+  etherscan: {
+    apiKey: {
+      "hyperliquid-testnet": "no-api-key-needed"
+    },
+    customChains: [
+      {
+        network: "hyperliquid-testnet",
+        chainId: 998,
+        urls: {
+          apiURL: "https://explorer.hyperliquid-testnet.xyz/api",
+          browserURL: "https://explorer.hyperliquid-testnet.xyz"
+        }
+      }
+    ]
   },
   paths: {
     sources: "./contracts",
     tests: "./test",
     cache: "./cache",
     artifacts: "./artifacts"
+  },
+  mocha: {
+    timeout: 40000
   }
 };
