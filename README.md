@@ -13,6 +13,9 @@ A cutting-edge suite of tools that pushes the boundaries of HyperEVM and HyperCo
 5. **Advanced, Adaptive Execution Layer** - $1,000
 7. **Track Prize Pool** - Up to $30,000 (1st place)
 
+### Demo Video
+
+
 ## 🚀 Key Features
 
 ### HyperEVM Transaction Simulator
